@@ -1,0 +1,5 @@
+.zed/
+build/
+install/
+log/
+.cache/
