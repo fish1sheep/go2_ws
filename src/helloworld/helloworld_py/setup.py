@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'go2_helloworld_py'
+package_name = 'helloworld_py'
 
 setup(
     name=package_name,
@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'hello = helloworld_py.hello:main'
         ],
     },
 )
