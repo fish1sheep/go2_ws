@@ -49,15 +49,22 @@
 
 import rclpy
 from rclpy.node import Node
+from unitree_api.msg import Request
 
 import termios
 import sys
 import tty
-
+import threading
 
 class TeleopNode(Node):
     def __init__(self):
         super().__init__('teleop_ctrl_keyboard')
+        self.pub = self.create_publisher(Request,"/api/sport/request",10)
+
+    def publish(self,apid_id):
+        req = Request()
+        req.header.identity.api_id = apid_id
+        self.pub.publish(req)
 
 def getKey(settings):
     # 设置读取模式
@@ -73,14 +80,18 @@ def main():
     # 读取键盘录入
     # 1.获取标准输入流终端属性并返回
     settings = termios.tcgetattr(sys.stdin)
-    # 2.循环读取按键
+    # ros2 node 实现，需要单独子线程处理
+    rclpy.init()
+    teleopNode = TeleopNode()
+    spinner = threading.Thread(target=rclpy.spin,args=(teleopNode,))
+    spinner.start()
+
     while True:
         key = getKey(settings)
         print(key)
+        if key == 'h':
+            teleopNode.publish(1016)
 
-    rclpy.init()
-    rclpy.spin(TeleopNode())
-    rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
