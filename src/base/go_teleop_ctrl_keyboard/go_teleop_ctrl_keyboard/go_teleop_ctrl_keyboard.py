@@ -56,6 +56,39 @@ import tty
 import threading
 import json
 
+msg = """
+This node takes keypresses from the keyboard and publishes them
+as unitree_api/msg/Request messages. It works best with a US keyboard layout.
+----------------------------------------------
+Moving around:
+      q     w     e
+      a     x     d
+      z     s     c
+
+For Holonomic mode (strafing), hold down the shift key:
+----------------------------------------------
+      Q     W     E
+      A     X     D
+      Z     S     C
+
+anything else : stop
+
+r/t : increase/decrease max speeds by 10%
+f/g : increase/decrease only linear speed by 10%
+v/b : increase/decrease only angular speed by 10%
+
+h: Greet
+j: Front Jump
+k: Stretch
+n: Sit Down
+m: Stand Up from Sitting
+y: Dance 1
+u: Dance 2
+
+CTRL-C to quit
+"""
+
+
 ROBOT_SPORT_API_ID5 = {
     # 基础控制指令
     "DAMP":                1001,  # 阻尼控制
@@ -128,20 +161,29 @@ moveBindings = {
     'Z': (-1, 1, 0, 0),
 }
 
+speedBindings = {
+    'r': (1.1, 1.1), # 线速度 * 1.1，角速度 * 1.1
+    't': (.9, .9),
+    'f': (1.1, 1),
+    'g': (.9, 1),
+    'v': (1, 1.1),
+    'b': (1, .9),
+}
+
 
 class TeleopNode(Node):
     def __init__(self):
         super().__init__('teleop_ctrl_keyboard')
         self.pub = self.create_publisher(Request, "/api/sport/request", 10)
-        self.declare_parameter("speed", 0.2)  # x和上的线速度一致
+        self.declare_parameter("speed", 0.2)
         self.declare_parameter("angular", 0.5)
 
+        speed_value = self.get_parameter("speed").value
+        angular_value = self.get_parameter("angular").value
 
-        self.speed = self.get_parameter("speed").value
-        self.angular = self.get_parameter("angular").value
-        # 如果参数为None，则手动设置默认值
-        self.speed = self.speed if self.speed is not None else 0.2
-        self.angular = self.angular if self.angular is not None else 0.5
+        # 确保不为 None
+        self.speed: float = speed_value if speed_value is not None else 0.2
+        self.angular: float = angular_value if angular_value is not None else 0.5
 
     def publish(self, apid_id, x=0.0, y=0.0, z=0.0):
         req = Request()
@@ -149,7 +191,6 @@ class TeleopNode(Node):
         js = {"x": x, "y": y, "z": z}
         req.parameter = json.dumps(js)
         self.pub.publish(req)
-
 
 def getKey(settings):
     # 设置读取模式
@@ -161,8 +202,8 @@ def getKey(settings):
     # 返回按键值
     return key
 
-
 def main():
+    print(msg)
     # 读取键盘录入
     # 1.获取标准输入流终端属性并返回
     settings = termios.tcgetattr(sys.stdin)
@@ -195,6 +236,15 @@ def main():
                 teleopNode.publish(ROBOT_SPORT_API_ID5["MOVE"], x = x_bind * teleopNode.speed,
                                y = y_bind * teleopNode.speed, z = z_bind * teleopNode.angular)
             # 4.速度控制（设置 api_id和速度消息）
+            elif key in speedBindings.keys():
+                s_bind = speedBindings[key][0] # 线速度
+                a_bind = speedBindings[key][1] # 角速度
+                teleopNode.speed = s_bind * teleopNode.speed
+                teleopNode.angular = a_bind * teleopNode.angular
+                print('current speed = %.2f, angular = %.2f' % (teleopNode.speed,teleopNode.angular))
+            else:
+                # 停止运动
+                teleopNode.publish(ROBOT_SPORT_API_ID5["BALANCESTAND"])
     finally:
         # go2进入站立平衡状态
         teleopNode.publish(ROBOT_SPORT_API_ID5["BALANCESTAND"])
