@@ -5,3 +5,4 @@ log/
 .cache/
 .venv/
 .vscode/
+zed_git.txt

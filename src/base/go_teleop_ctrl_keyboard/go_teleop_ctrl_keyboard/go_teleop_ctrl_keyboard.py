@@ -170,7 +170,6 @@ speedBindings = {
     'b': (1, .9),
 }
 
-
 class TeleopNode(Node):
     def __init__(self):
         super().__init__('teleop_ctrl_keyboard')
