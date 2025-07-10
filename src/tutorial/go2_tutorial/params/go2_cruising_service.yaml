@@ -1,0 +1,5 @@
+ros__parameters:
+  use_sim_time: false
+  vx: 0.1
+  vy: 0.0
+  vyaw: 0.5

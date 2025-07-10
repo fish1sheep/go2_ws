@@ -29,8 +29,13 @@ def generate_launch_description():
         name = "use_joint_state_publisher",
         default_value= "true"
     )
+    model = DeclareLaunchArgument(
+        name= "urdf_path",
+        default_value= os.path.join(go2_decription_pkg,"urdf","go2_description.urdf")
+    )
 
-    robot_desc = ParameterValue(Command(["xacro ",os.path.join(go2_decription_pkg,"urdf","go2_description.urdf")]))
+    robot_desc = ParameterValue(Command(["xacro ",LaunchConfiguration("urdf_path")]))
+
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable= "robot_state_publisher",
@@ -43,7 +48,8 @@ def generate_launch_description():
         condition = IfCondition(LaunchConfiguration("use_joint_state_publisher"))
     )
     return LaunchDescription([
-        robot_state_publisher,
+        model,
         use_joint_state_publisher,
+        robot_state_publisher,
         joint_state_publisher,
     ])
