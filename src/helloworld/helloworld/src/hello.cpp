@@ -33,9 +33,13 @@ class HelloWorld : public rclcpp::Node
 
 int main(int argc, char **argv)
 {
+    // 初始化ROS2客户端；
     rclcpp::init(argc, argv);
+    // 创建节点
     auto node = std::make_shared<HelloWorld>();
+    // 调用spin函数，并传入节点对象指针；
     rclcpp::spin(node);
+    // 资源释放。
     rclcpp::shutdown();
     return 0;
 }

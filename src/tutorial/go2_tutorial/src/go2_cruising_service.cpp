@@ -13,11 +13,11 @@
         5.资源释放。
 */
 // 1.包含头文件；
-#include "rclcpp/rclcpp.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "go2_tutorial_inter/srv/cruising.hpp"
-#include "sport_model.hpp"
-#include "geometry_msgs/msg/point.hpp"
+#include "rclcpp/rclcpp.hpp" // IWYU pragma: keep
+#include "nav_msgs/msg/odometry.hpp" // IWYU pragma: keep
+#include "go2_tutorial_inter/srv/cruising.hpp" // IWYU pragma: keep
+#include "sport_model.hpp" // IWYU pragma: keep
+#include "geometry_msgs/msg/point.hpp" // IWYU pragma: keep
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
@@ -48,14 +48,9 @@ public:
         service = this->create_service<go2_tutorial_inter::srv::Cruising>("cruising",std::bind(&CruServer::cb,this,_1,_2));
     }
 private:
-    // rclcpp::SyncParametersClient::SharedPtr paramClient;
-    rclcpp::AsyncParametersClient::SharedPtr paramClient;
-    rclcpp::Service<go2_tutorial_inter::srv::Cruising>::SharedPtr service;
-    geometry_msgs::msg::Point current_point;
-
-    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
     void cb(const go2_tutorial_inter::srv::Cruising::Request::SharedPtr req,
-            const go2_tutorial_inter::srv::Cruising::Response::SharedPtr res){
+            const go2_tutorial_inter::srv::Cruising::Response::SharedPtr res)
+    {
         int flag = req->flag;
         int64_t id = ROBOT_SPORT_API_ID_BALANCESTAND;
         // 判断提交的数据
@@ -78,6 +73,11 @@ private:
         current_point = odom.pose.pose.position;
     }
 
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
+    // rclcpp::SyncParametersClient::SharedPtr paramClient;
+    rclcpp::AsyncParametersClient::SharedPtr paramClient;
+    rclcpp::Service<go2_tutorial_inter::srv::Cruising>::SharedPtr service;
+    geometry_msgs::msg::Point current_point;
 };
 int main(int argc, char const *argv[])
 {

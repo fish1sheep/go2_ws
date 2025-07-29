@@ -1,0 +1,5 @@
+float32 goal
+---
+geometry_msgs/Point point
+---
+float32 distance

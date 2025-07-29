@@ -13,8 +13,8 @@
         6.资源释放。
 */
 // 1.包含头文件；
-#include "rclcpp/rclcpp.hpp"
-#include "go2_tutorial_inter/srv/cruising.hpp"
+#include "rclcpp/rclcpp.hpp" // IWYU pragma: keep
+#include "go2_tutorial_inter/srv/cruising.hpp" // IWYU pragma: keep
 
 using namespace std::chrono_literals;
 // 3.自定义节点类；
@@ -72,11 +72,11 @@ int main(int argc, char const *argv[])
       RCLCPP_INFO(client->get_logger(),"请求正常处理");
       auto cru_res = response.get();
       RCLCPP_INFO(client->get_logger(),"响应坐标:(%.3f,%.3f)", cru_res->point.x,cru_res->point.y);
-
-    } else {
+    } 
+    else 
+    {
       RCLCPP_INFO(client->get_logger(),"请求异常");
     }
-
     // 6.资源释放。
     rclcpp::shutdown();
     return 0;

@@ -14,7 +14,8 @@
   <depend>unitree_api</depend>
   <depend>ros2launch</depend>
   <depend>nav_msgs</depend>
-
+  <depend>rclcpp_action</depend>
+  
   <depend>geometry_msgs</depend>
   <depend>go2_tutorial_inter</depend>
 

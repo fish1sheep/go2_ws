@@ -13,6 +13,7 @@ find_package(unitree_go REQUIRED)
 find_package(unitree_api REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(go2_tutorial_inter REQUIRED)
+find_package(rclcpp_action REQUIRED)
 
 # go2_ctrl
 add_executable(go2_ctrl src/go2_ctrl.cpp)
@@ -66,6 +67,36 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME})
 
 
+add_executable(go2_nav_server src/go2_nav_server.cpp)
+add_executable(go2_nav_client src/go2_nav_client.cpp)
+
+ament_target_dependencies(
+  go2_nav_server
+  "rclcpp"
+  "unitree_go"
+  "unitree_api"
+  "nav_msgs"
+  "go2_tutorial_inter"
+  "rclcpp_action"
+  "geometry_msgs"
+)
+
+ament_target_dependencies(
+  go2_nav_client
+  "rclcpp"
+  "unitree_go"
+  "unitree_api"
+  "nav_msgs"
+  "go2_tutorial_inter"
+  "rclcpp_action"
+  "geometry_msgs"
+)
+
+install(TARGETS 
+  go2_nav_server
+  go2_nav_client
+  DESTINATION lib/${PROJECT_NAME})
+
 target_include_directories(go2_ctrl PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
@@ -76,6 +107,14 @@ target_include_directories(go2_cruising_client PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+target_include_directories(go2_nav_server PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_include_directories(go2_nav_client PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+  
 install(DIRECTORY launch params
   DESTINATION share/${PROJECT_NAME}
 )

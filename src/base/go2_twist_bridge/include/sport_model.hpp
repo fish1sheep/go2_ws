@@ -2,8 +2,8 @@
 #define _SPORT_MODEL_
 
 #include <iostream> // IWYU pragma: keep
-
-#pragma pack(push, 1)
+;
+#pragma pack(push,1)
 
 // 1001: 阻尼控制
 const int32_t ROBOT_SPORT_API_ID_DAMP = 1001;

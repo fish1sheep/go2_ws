@@ -7,6 +7,8 @@
 #include "sport_model.hpp"
 #include "unitree_api/msg/request.hpp"  // IWYU pragma: keep
 
+using namespace std::chrono_literals;
+
 // 3.自定义节点类；
 class Go2Ctrl : public rclcpp::Node
 {
@@ -19,8 +21,8 @@ class Go2Ctrl : public rclcpp::Node
         this->declare_parameter<int64_t>("sport_api_id", ROBOT_SPORT_API_ID_BALANCESTAND);
 
         // 创建一个ros2 pubilsher
-        req_puber = this->create_publisher<unitree_api::msg::Request>("/api/sport/request", 10);
-        timer_    = this->create_wall_timer(std::chrono::milliseconds(100),
+        pub_ = this->create_publisher<unitree_api::msg::Request>("/api/sport/request", 10);
+        timer_    = this->create_wall_timer(0.1s,
                                             std::bind(&Go2Ctrl::cruise, this));
     }
 
@@ -44,9 +46,9 @@ class Go2Ctrl : public rclcpp::Node
             // RCLCPP_INFO(this->get_logger(),"req.param = %s", req.parameter.c_str());
         }
 
-        req_puber->publish(req);  // 发布数据
+        pub_->publish(req);  // 发布数据
     }
-    rclcpp::Publisher<unitree_api::msg::Request>::SharedPtr req_puber;
+    rclcpp::Publisher<unitree_api::msg::Request>::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr                            timer_;
 };
 

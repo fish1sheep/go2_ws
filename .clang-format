@@ -1,8 +1,0 @@
-BasedOnStyle: Google
-IndentWidth: 4
-ColumnLimit: 100
-UseTab: Never
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-BreakBeforeBraces: Allman
-SpaceBeforeParens: ControlStatements
